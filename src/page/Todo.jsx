@@ -1,8 +1,5 @@
-import React, { useState } from "react";
-import axios from "axios";
-
+import React, { useState, useContext } from "react";
 import Login from "./Login.jsx";
-import { useContext } from "react";
 import { AppContext } from "../context/AppContext.jsx";
 
 const Todo = () => {
@@ -20,38 +17,30 @@ const Todo = () => {
   return (
     <div>
       {token ? (
-        <div className=" gap-4 min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center p-8">
-          <h1 className="text-4xl font-extrabold text-blue-700 mb-8 shadow-md px-6 py-3 bg-white rounded-2xl">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center p-4 sm:p-8">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-700 mb-6 sm:mb-8 shadow-md px-4 sm:px-6 py-2 sm:py-3 bg-white rounded-2xl text-center">
             📝 TODO - APPLICATION
           </h1>
 
           {/* Input Section */}
-          <div className="flex items-center gap-3 mb-8 bg-white shadow-md rounded-xl px-4 py-3 w-full max-w-md">
-            <form onSubmit={addTodo}>
-              <input
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                type="text"
-                placeholder="Enter your task..."
-                className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold transition-all"
-              >
-                Add
-              </button>
-            </form>
-          </div>
-
-          {/* Table Header */}
-          <div className="grid grid-cols-5 gap-4 font-semibold text-gray-700 bg-white p-3 rounded-lg shadow mb-2 w-full max-w-3xl text-center">
-            <p>Title</p>
-            <p>Date</p>
-            <p>Status</p>
-            <p>Action</p>
-            <p>Action</p>
-          </div>
+          <form
+            onSubmit={addTodo}
+            className="flex flex-col sm:flex-row items-center gap-3 mb-8 bg-white shadow-md rounded-xl px-4 py-4 w-full max-w-md"
+          >
+            <input
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              type="text"
+              placeholder="Enter your task..."
+              className="flex-1 border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto px-5 py-2 rounded-lg font-semibold transition-all"
+            >
+              Add
+            </button>
+          </form>
 
           {/* Todo List */}
           <div className="w-full max-w-3xl bg-white rounded-lg shadow divide-y divide-gray-200">
@@ -62,33 +51,43 @@ const Todo = () => {
                 .map((item, index) => (
                   <div
                     key={index}
-                    className="grid grid-cols-5 gap-4 p-3 text-center items-center hover:bg-gray-50 transition-all"
+                    className="grid grid-cols-1 sm:grid-cols-5 gap-3 sm:gap-4 p-4 text-center sm:text-left items-center hover:bg-gray-50 transition-all"
                   >
+                    {/* Title */}
                     <p
-                      className={`text-gray-800 font-medium ${
+                      className={`text-gray-800 font-medium break-words ${
                         item.completed ? "line-through text-gray-400" : ""
                       }`}
                     >
                       {item.title}
                     </p>
+
+                    {/* Date */}
                     <p className="text-gray-500 text-sm">
                       {new Date(item.createdAt).toLocaleDateString()}
                     </p>
 
-                    <input
-                      type="checkbox"
-                      checked={item.completed} // shows current status
-                      onChange={() => changeStatus(item._id, item.completed)} // toggles status
-                      className="w-4 h-4 mx-auto"
-                    />
+                    {/* Checkbox */}
+                    <div className="flex justify-center sm:justify-start">
+                      <input
+                        type="checkbox"
+                        checked={item.completed}
+                        onChange={() =>
+                          changeStatus(item._id, item.completed)
+                        }
+                        className="w-5 h-5 accent-blue-600"
+                      />
+                    </div>
 
+                    {/* Delete Button */}
                     <button
                       onClick={() => deleteTodo(item._id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md transition-all"
+                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium transition-all w-full sm:w-auto"
                     >
                       Delete
                     </button>
 
+                    {/* Update Button */}
                     <button
                       onClick={() => {
                         const newTitle = prompt("Enter new title:", item.title);
@@ -96,14 +95,16 @@ const Todo = () => {
                           updateTodo(item._id, newTitle.trim());
                         }
                       }}
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md transition-all"
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md font-medium transition-all w-full sm:w-auto"
                     >
                       Update
                     </button>
                   </div>
                 ))
             ) : (
-              <p className="text-center text-gray-500 py-4">No todos yet 😴</p>
+              <p className="text-center text-gray-500 py-6">
+                No todos yet 😴
+              </p>
             )}
           </div>
         </div>
